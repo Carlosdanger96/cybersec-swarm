@@ -1,162 +1,161 @@
-<div align="center">
+# Cybersec Swarm
 
-# 🚀 OpenSwarm
+Cybersec Swarm is a defensive, authorization-bound multi-agent system forked from OpenSwarm and adapted for cybersecurity research, secure code review, threat modeling, log/SIEM analysis, MCP tool-safety evaluation, and governance artifact generation.
 
-![OpenSwarm](assets/new-framework.jpg)
+The core principle is:
 
-</div>
+> Defensively motivated, offensively aware in controlled testing, morally and legally constrained.
 
-**The fully open-source multi-agent system that does everything Claude Code can't.**
+This repository is not intended to automate attacks against third-party systems. It is designed for owned systems, explicitly authorized environments, labs, synthetic datasets, uploaded code, uploaded logs, and policy/report generation.
 
-Create polished slide decks, research reports, data visualizations, documents, images, and videos — all from a single prompt in your terminal. No platform, no UI, no setup hassles.
+## What makes this different
 
-✨ **One prompt → Complete deliverables**
-🎯 **8 specialized agents working together**
-⚡ **Install in 30 seconds, running in 60**
-🔧 **100% customizable and forkable**
+Most agent systems route everything through a single general-purpose assistant. Cybersec Swarm keeps the OpenSwarm orchestrator pattern, but repurposes the specialist team around defensive security work.
 
-Built on [Agency Swarm](https://github.com/VRSEN/agency-swarm) — the framework powering real AI agencies.
+Instead of asking one agent to perform research, code review, log analysis, policy writing, and reporting, the orchestrator routes work to domain-specific agents:
 
----
+| Agent | Purpose |
+| --- | --- |
+| Cybersec Orchestrator | Routes requests, enforces specialist boundaries, and coordinates multi-agent workflows. |
+| Scope & Authorization Agent | Checks whether the requested task is in defensive/authorized scope before specialist work begins. |
+| Threat Model Agent | Builds threat models, attack trees, misuse cases, control mappings, and risk registers. |
+| Security Research Agent | Performs source-backed defensive cybersecurity and LLM-security research. |
+| Secure Code Review Agent | Reviews user-provided or owned code for vulnerabilities and remediation options. |
+| SIEM/Log Analyst Agent | Analyzes uploaded logs, alerts, detection data, and incident timelines. |
+| MCP Tool Safety Agent | Reviews MCP tools, connector permissions, tool-call boundaries, audit requirements, and prompt-injection exposure. |
+| Policy & Governance Agent | Produces cybersecurity policy, AI governance, acceptable-use, audit, and review artifacts. |
+| Data Analyst | Performs structured security data analysis and visualization. |
+| Docs Agent | Produces formal security reports, Markdown, DOCX, PDF, SOPs, and assessment documents. |
+| Slides Agent | Produces security briefings, executive decks, and technical presentations. |
 
-> 💼 **Investor or looking to integrate AI agents into your SaaS?**
-> We're the team behind OpenSwarm and Agency Swarm, building the future of multi-agent systems.
-> **[Partner with us →](https://vrsen-ai.notion.site/fee2d391a8d74b24baa04a0b648af83c?pvs=105)**
+## Allowed work
 
----
+Cybersec Swarm is intended for:
 
-## 💡 What Makes This Different?
+- Secure code review of code you own or are authorized to test.
+- Threat modeling for applications, agents, MCP servers, APIs, cloud systems, and local infrastructure.
+- Defensive log analysis, incident triage, alert clustering, and timeline reconstruction.
+- Detection engineering using synthetic, owned, or authorized telemetry.
+- Prompt-injection testing and LLM tool-safety evaluation in controlled environments.
+- MCP permission-policy design, allowlist/denylist review, and audit logging design.
+- Security governance artifacts, policies, red-team evaluation plans, reports, and executive summaries.
+- Defensive research summaries with citations and clearly stated assumptions.
 
-Instead of one agent trying to do everything poorly, you get **specialists coordinated by an orchestrator**.
+## Out-of-scope work
 
-### 🎯 Real Examples
+The system should not provide or automate:
 
-Paste these into your terminal and watch magic happen:
+- Credential theft, phishing, impersonation, or social-engineering execution.
+- Malware creation, payload deployment, persistence, evasion, botnets, or destructive automation.
+- Unauthorized exploitation of third-party systems.
+- Instructions for bypassing monitoring, rate limits, authentication, or access controls.
+- Exfiltration workflows or stealthy post-exploitation activity.
+- Real-world targeting of people, companies, infrastructure, or systems without explicit authorization.
 
-- **"Create a complete investor pitch for OpenSwarm"** → Full deck + executive summary + market research
-- **"Research my top 5 competitors and write 3 SEO-optimized blog posts"** → Competitive analysis + keyword research + publish-ready content
-- **"Analyze this data and create a quarterly report with charts"** → Data insights + visualizations + formatted document
-- **"Generate a product launch video with animations"** → Professional video with graphics and transitions
-- **"Build me a marketing campaign for Q2"** → Strategy doc + creative assets + implementation timeline
+When a request is ambiguous, the Scope & Authorization Agent should narrow it to a safe defensive workflow or ask for authorization context.
 
-Connect to 10,000+ external services (Gmail, Slack, GitHub, HubSpot) via Composio for even more power.
+## Example prompts
 
----
+```text
+Create a threat model for my local MCP gateway that exposes tools through Cloudflare Tunnel. Include assets, trust boundaries, attack paths, controls, and audit logging requirements.
+```
 
-## 🤖 Meet Your AI Team
+```text
+Review this Python FastAPI service for security issues. Only analyze the uploaded code. Provide severity, affected file/function, evidence, remediation, and validation tests.
+```
 
-| Agent                      | What it does                                                                                                                                                                                 |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Orchestrator**           | Routes every user request to the right specialist(s). Never answers directly — pure coordination.                                                                                            |
-| **Virtual Assistant**      | Handles everyday tasks: writing, scheduling, messaging, task management. Gains 10,000+ external integrations via [Composio](https://composio.dev) (Gmail, Slack, GitHub, HubSpot, and more). |
-| **Deep Research**          | Conducts comprehensive, evidence-based web research with citations and balanced analysis.                                                                                                    |
-| **Data Analyst**           | Analyses structured data, builds charts, runs statistical models — all inside an isolated IPython kernel.                                                                                    |
-| **Slides Agent**           | Generates complete, visually polished HTML slide decks, then exports them to PPTX.                                                                                                           |
-| **Docs Agent**             | Creates formatted Word documents and PDFs from outlines or raw content.                                                                                                                      |
-| **Image Generation Agent** | Generates and edits images using Gemini 2.5 Flash Image / Gemini 3 Pro Image and fal.ai.                                                                                                     |
-| **Video Generation Agent** | Produces videos via Sora (OpenAI), Veo (Google), and Seedance (fal.ai); also edits and combines clips.                                                                                       |
+```text
+Analyze these synthetic SIEM logs and build an incident timeline with suspected root cause, affected assets, detection gaps, and recommended Sigma-style detection logic.
+```
 
----
+```text
+Design a defensive prompt-injection test plan for an LLM agent with filesystem and GitHub tools. Include expected safe behavior, logging fields, and pass/fail criteria.
+```
 
-## 📦 Get Started in 30 Seconds
+```text
+Create an executive security briefing deck summarizing MCP tool-abuse risks and a policy proposal for least-privilege tool access.
+```
 
-**For most users (recommended):**
+## Architecture
+
+Cybersec Swarm preserves the OpenSwarm pattern:
+
+```text
+User request
+    ↓
+Cybersec Orchestrator
+    ↓
+Scope & Authorization Agent, if needed
+    ↓
+Specialist agents
+    ↓
+Docs / Slides / Data outputs
+```
+
+The orchestrator should route work, not perform specialist work itself. Specialists should stay within their domain and transfer work when another agent owns the task.
+
+## Setup
+
+This is currently a customized OpenSwarm fork. The underlying requirements are still inherited from OpenSwarm.
+
+Recommended local setup:
 
 ```bash
 npm install -g @vrsen/openswarm
 openswarm
 ```
 
-That's it! The setup wizard handles everything: authentication, dependencies, and configuration.
-
-**Requirements:** Node.js 20+ (Python 3.10+ auto-installed)
-
-## 🔧 Build Your Own Swarm
-
-Fork this repo and create your own specialized AI team in minutes:
+Developer setup:
 
 ```bash
-git clone https://github.com/VRSEN/openswarm.git
-cd openswarm
-```
-
-Then tell **Claude Code**, **Cursor**, or **Codex**:
-
-> _"Turn this into an SEO optimization swarm"_
-
-They'll automatically customize all agents for your use case.
-
-**Popular custom swarms:**
-
-- **SEO Swarm:** Keyword research + competitor analysis + blog writing
-- **Sales Swarm:** Lead research + outreach + proposal generation
-- **Marketing Swarm:** Campaign planning + creative assets + analytics
-- **Product Swarm:** Market research + feature specs + launch materials
-
-## ⚙️ API Keys & Setup
-
-The setup wizard walks you through everything, but you'll need at least one of these:
-
-**Required (choose one):**
-
-- `OPENAI_API_KEY` - For GPT 5.5 and Sora video generation
-- `ANTHROPIC_API_KEY` - For Claude models
-
-**Optional superpowers:**
-
-- `COMPOSIO_API_KEY` - Unlock 10,000+ integrations (Gmail, Slack, GitHub, etc.)
-- `GOOGLE_API_KEY` - Gemini image generation + Veo video
-- `FAL_KEY` - Advanced video editing and effects
-- `SEARCH_API_KEY` - Web search for research agent
-
-Tools gracefully degrade when keys are missing — you'll get clear instructions on what to add.
-
----
-
-## 🚀 Coming Soon
-
-- **Agent Builder Agent** - Create custom swarms from a single prompt
-- **OpenClaw + Claude Code integration** - All agents in one place
-
-⭐ **Star us on GitHub** to stay updated and help us prioritize features!
-
-## 🏗️ For Developers
-
-**Local development:**
-
-```bash
-git clone https://github.com/VRSEN/openswarm.git
-cd openswarm
+git clone https://github.com/Carlosdanger96/cybersec-swarm.git
+cd cybersec-swarm
 python swarm.py
 ```
 
-**Docker deployment:**
+API server:
 
 ```bash
-git clone https://github.com/VRSEN/openswarm.git
-cd openswarm
-cp .env.example .env        # Add your API keys
-docker-compose up --build
+python server.py
 ```
 
-**API server:**
+Required provider key, choose at least one:
 
-```bash
-python server.py           # Runs on localhost:8080
+```text
+OPENAI_API_KEY
+ANTHROPIC_API_KEY
 ```
 
----
+Optional integrations may include Composio, Google, fal.ai, and search-provider keys depending on which inherited tools are enabled.
 
-## 📺 Learn More
+## Development roadmap
 
-- **Watch the full demo:** [YouTube video →](https://youtu.be/c5DdXzqaeVU?si=rM2CNaZ8qVwMvqmz)
-- **Multi-agent framework:** [Agency Swarm](https://github.com/VRSEN/agency-swarm)
-- **External integrations:** [Composio](https://composio.dev)
+### Phase 1: Defensive swarm conversion
 
----
+- Replace OpenSwarm branding with Cybersec Swarm.
+- Add defensive scope and authorization rules.
+- Add cybersec-focused specialist agents.
+- Preserve Docs, Slides, and Data Analyst capabilities for deliverable creation.
 
-## 📄 License
+### Phase 2: Repo artifacts
 
-MIT — see [LICENSE](LICENSE).
+- Add threat-model templates.
+- Add MCP permission-policy examples.
+- Add audit-log schema examples.
+- Add synthetic red-team evaluation cases.
+- Add report and executive-briefing templates.
 
-**Built with ❤️ by the team behind [Agency Swarm](https://github.com/VRSEN/agency-swarm)**
+### Phase 3: Tool gateway integration
+
+- Integrate with a constrained local MCP gateway.
+- Add explicit tool permission policies.
+- Add audit trail requirements for tool calls.
+- Add pass/fail tests for prompt-injection and tool-abuse scenarios.
+
+## License
+
+MIT, inherited from the upstream OpenSwarm project.
+
+## Upstream
+
+Original project: VRSEN/OpenSwarm
