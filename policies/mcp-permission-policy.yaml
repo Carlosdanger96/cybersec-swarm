@@ -1,0 +1,199 @@
+version: 0.1
+name: cybersec-swarm-mcp-permission-policy
+status: draft
+purpose: >
+  Define least-privilege MCP and connector access for Cybersec Swarm agents.
+  This policy is intended for defensive cybersecurity, secure code review,
+  log analysis, governance, and controlled evaluation workflows.
+
+principles:
+  - least_privilege
+  - explicit_authorization
+  - human_review_for_high_impact_actions
+  - audit_all_tool_calls
+  - deny_by_default_for_network_and_filesystem_expansion
+  - no_credential_access_without_explicit_user_provided_context
+
+scope:
+  allowed_environments:
+    - owned_local_systems
+    - explicitly_authorized_repositories
+    - lab_environments
+    - synthetic_datasets
+    - uploaded_code
+    - uploaded_logs
+    - policy_and_report_artifacts
+  disallowed_environments:
+    - third_party_targets_without_authorization
+    - production_systems_without_explicit_scope
+    - personal_accounts_not_relevant_to_the_task
+    - credential_stores_unless_explicitly_requested_for_defensive_review
+
+agent_permissions:
+  cybersec_orchestrator:
+    allowed_tools:
+      - route_task
+      - request_scope_check
+      - summarize_specialist_outputs
+    denied_tools:
+      - shell_execute
+      - network_scan
+      - credential_access
+      - external_write
+    requires_human_review: []
+
+  scope_authorization_agent:
+    allowed_tools:
+      - inspect_request_context
+      - classify_scope
+      - request_missing_authorization_context
+    denied_tools:
+      - shell_execute
+      - external_write
+      - active_network_actions
+    requires_human_review: []
+
+  threat_model_agent:
+    allowed_tools:
+      - read_uploaded_docs
+      - read_repo_metadata
+      - create_markdown_artifacts
+      - create_diagrams
+    denied_tools:
+      - active_exploitation
+      - credential_access
+      - destructive_actions
+    requires_human_review:
+      - publishing_findings_to_external_systems
+
+  secure_code_review_agent:
+    allowed_tools:
+      - read_authorized_code
+      - static_analysis
+      - generate_patch_suggestions
+      - create_validation_tests
+    denied_tools:
+      - commit_changes_without_user_approval
+      - run_untrusted_code_without_sandbox
+      - exploit_against_live_target
+    requires_human_review:
+      - repository_write
+      - dependency_update
+      - security_patch_application
+
+  siem_log_analyst_agent:
+    allowed_tools:
+      - read_uploaded_logs
+      - parse_structured_logs
+      - create_timeline
+      - generate_detection_suggestions
+    denied_tools:
+      - access_live_siem_without_explicit_authorization
+      - delete_logs
+      - modify_alert_rules_without_review
+    requires_human_review:
+      - live_siem_query
+      - detection_rule_deployment
+
+  mcp_tool_safety_agent:
+    allowed_tools:
+      - inspect_tool_manifests
+      - evaluate_permissions
+      - create_allowlist
+      - create_audit_requirements
+      - generate_prompt_injection_tests
+    denied_tools:
+      - expand_tool_permissions_without_review
+      - execute_external_side_effects
+      - bypass_tool_policy
+    requires_human_review:
+      - tool_permission_change
+      - connector_enablement
+      - external_api_write
+
+  policy_governance_agent:
+    allowed_tools:
+      - create_policy_docs
+      - create_control_mappings
+      - create_review_checklists
+      - create_risk_registers
+    denied_tools:
+      - change_enforcement_settings_without_review
+      - external_publication_without_review
+    requires_human_review:
+      - policy_publication
+      - compliance_claim
+
+risk_tiers:
+  low:
+    examples:
+      - read_uploaded_markdown
+      - summarize_synthetic_logs
+      - create_report_template
+    review: not_required
+  medium:
+    examples:
+      - analyze_owned_repository
+      - generate_security_patch_suggestion
+      - create_detection_rule_draft
+    review: recommended
+  high:
+    examples:
+      - write_to_repository
+      - query_live_siem
+      - enable_connector
+      - run_code
+    review: required
+  prohibited:
+    examples:
+      - credential_theft
+      - persistence
+      - evasion
+      - malware_deployment
+      - unauthorized_targeting
+      - destructive_actions
+    review: refused_or_redirected
+
+default_network_policy:
+  outbound_network: deny_by_default
+  allowlisted_domains: []
+  requires_reason_for_each_domain: true
+  block_private_network_scans: true
+  block_public_target_testing_without_authorization: true
+
+default_filesystem_policy:
+  read_paths:
+    - project_workspace
+    - uploaded_files
+  write_paths:
+    - project_workspace
+    - explicit_user_output_path
+  denied_paths:
+    - credential_stores
+    - browser_profile_secrets
+    - ssh_private_keys
+    - system_sensitive_paths
+  require_confirmation_for_delete: true
+  require_confirmation_for_overwrite: true
+
+audit_requirements:
+  log_all_tool_calls: true
+  log_denied_requests: true
+  log_human_review_decisions: true
+  minimum_fields:
+    - timestamp_utc
+    - session_id
+    - user_request_id
+    - agent_name
+    - tool_name
+    - action_type
+    - target_resource
+    - authorization_basis
+    - risk_tier
+    - decision
+    - reason
+    - inputs_hash
+    - outputs_hash
+    - human_review_required
+    - human_reviewer
+    - policy_version
