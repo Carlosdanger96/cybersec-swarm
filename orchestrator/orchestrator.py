@@ -9,10 +9,11 @@ load_dotenv()
 
 def create_orchestrator() -> Agent:
     return Agent(
-        name="Orchestrator",
+        name="Cybersec Orchestrator",
         description=(
-            "Primary coordinator that plans multi-agent workflows, runs independent workstreams in parallel, "
-            "and hands off to a specialist when tight user iteration is needed."
+            "Primary coordinator for defensive cybersecurity workflows. Routes requests to scope, "
+            "threat modeling, research, code review, log analysis, MCP tool-safety, governance, "
+            "docs, slides, and data specialists without performing specialist work directly."
         ),
         instructions="./instructions.md",
         model=get_default_model(),
@@ -20,10 +21,10 @@ def create_orchestrator() -> Agent:
             reasoning=Reasoning(effort="medium", summary="auto") if is_openai_provider() else None,
         ),
         conversation_starters=[
-            "What can this agency do?",
-            "Build a full launch package: research, slides, docs, and creative assets.",
-            "Analyze my data and then turn insights into a polished executive deck.",
-            "Coordinate a workflow for proposal doc + promo visuals + short product video.",
+            "Create a threat model for my local MCP gateway.",
+            "Review this uploaded code for security issues.",
+            "Analyze these synthetic SIEM logs and build an incident timeline.",
+            "Create a governance package for LLM tool-safety and prompt-injection testing.",
         ],
     )
 
